@@ -82,7 +82,6 @@
 		5470B599198514F700E4D941 /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
 		5470B59A198514F700E4D941 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		5470B59B198514F700E4D941 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		5470B5C019851F3900E4D941 /* EXTKeyPathCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTKeyPathCoding.h; sourceTree = "<group>"; };
 		5470B5C119851F3900E4D941 /* EXTRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTRuntimeExtensions.h; sourceTree = "<group>"; };
 		5470B5C219851F3900E4D941 /* EXTRuntimeExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXTRuntimeExtensions.m; sourceTree = "<group>"; };
 		5470B5C519851F3900E4D941 /* metamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metamacros.h; sourceTree = "<group>"; };
@@ -305,7 +304,6 @@
 		5470B5BF19851F3900E4D941 /* libextobjc */ = {
 			isa = PBXGroup;
 			children = (
-				5470B5C019851F3900E4D941 /* EXTKeyPathCoding.h */,
 				5470B5C119851F3900E4D941 /* EXTRuntimeExtensions.h */,
 				5470B5C219851F3900E4D941 /* EXTRuntimeExtensions.m */,
 				5470B5C519851F3900E4D941 /* metamacros.h */,
