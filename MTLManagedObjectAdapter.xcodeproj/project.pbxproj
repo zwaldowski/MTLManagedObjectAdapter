@@ -34,6 +34,8 @@
 		D0EB706C1AB74C4100BBB455 /* SwiftJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EB706B1AB74C4100BBB455 /* SwiftJunk.swift */; };
 		D0EB706D1AB74C4100BBB455 /* SwiftJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EB706B1AB74C4100BBB455 /* SwiftJunk.swift */; };
 		D0EB706E1AB74D5E00BBB455 /* MTLManagedObjectAdapterSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 5470B52B1985122300E4D941 /* MTLManagedObjectAdapterSpec.m */; };
+		DB2E9B791C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2E9B781C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift */; };
+		DB2E9B7A1C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2E9B781C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,7 @@
 		D0EB70631AB74A0A00BBB455 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quick.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0EB70661AB74A2200BBB455 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0EB706B1AB74C4100BBB455 /* SwiftJunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftJunk.swift; sourceTree = "<group>"; };
+		DB2E9B781C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTLManagedObjectAdapter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +197,7 @@
 			children = (
 				5470B5171985122200E4D941 /* MTLManagedObjectAdapter.h */,
 				5470B5181985122200E4D941 /* MTLManagedObjectAdapter.m */,
+				DB2E9B781C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift */,
 				5470B5111985122200E4D941 /* Supporting Files */,
 			);
 			path = MTLManagedObjectAdapter;
@@ -475,6 +479,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB2E9B791C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift in Sources */,
 				5470B5191985122200E4D941 /* MTLManagedObjectAdapter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,6 +500,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB2E9B7A1C0FCD8800DAFF8F /* MTLManagedObjectAdapter.swift in Sources */,
 				D0EB70531AB7479700BBB455 /* MTLManagedObjectAdapter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -557,11 +563,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5470B599198514F700E4D941 /* Mac-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -570,10 +580,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5470B599198514F700E4D941 /* Mac-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -636,11 +649,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5470B599198514F700E4D941 /* Mac-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Test;
@@ -682,10 +699,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5470B599198514F700E4D941 /* Mac-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -715,12 +735,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0EB70511AB7450800BBB455 /* iOS-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -730,12 +754,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0EB70511AB7450800BBB455 /* iOS-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -745,11 +773,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0EB70511AB7450800BBB455 /* iOS-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -760,11 +791,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0EB70511AB7450800BBB455 /* iOS-Framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				INFOPLIST_FILE = MTLManagedObjectAdapter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.${PRODUCT_NAME:rfc1034identifier}";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
