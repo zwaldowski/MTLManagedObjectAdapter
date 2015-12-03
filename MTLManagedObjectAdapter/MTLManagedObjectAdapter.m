@@ -10,7 +10,6 @@
 
 #import <Mantle/Mantle.h>
 
-#import "EXTScope.h"
 #import "EXTRuntimeExtensions.h"
 
 #import "MTLManagedObjectAdapter.h"
@@ -298,11 +297,10 @@ static SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
 	CFMutableDictionaryRef processedObjects = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 	if (processedObjects == NULL) return nil;
 
-	@onExit {
-		CFRelease(processedObjects);
-	};
+	id model = [self modelOfClass:modelClass fromManagedObject:managedObject processedObjects:processedObjects error:error];
+	CFRelease(processedObjects);
 
-	return [self modelOfClass:modelClass fromManagedObject:managedObject processedObjects:processedObjects error:error];
+	return model;
 }
 
 + (id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error {
@@ -586,11 +584,11 @@ static SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
 	CFMutableDictionaryRef processedObjects = CFDictionaryCreateMutable(NULL, 0, &keyCallbacks, &kCFTypeDictionaryValueCallBacks);
 	if (processedObjects == NULL) return nil;
 
-	@onExit {
-		CFRelease(processedObjects);
-	};
+	id managedObject = [self managedObjectFromModel:model insertingIntoContext:context processedObjects:processedObjects error:error];
 
-	return [self managedObjectFromModel:model insertingIntoContext:context processedObjects:processedObjects error:error];
+	CFRelease(processedObjects);
+
+	return managedObject;
 }
 
 + (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error {
@@ -734,9 +732,6 @@ static SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
 		if (property == NULL) continue;
 
 		mtl_moa_propertyAttributes *attributes = mtl_moa_copyPropertyAttributes(property);
-		@onExit {
-			free(attributes);
-		};
 
 		NSValueTransformer *transformer = nil;
 
@@ -749,6 +744,8 @@ static SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
 		}
 
 		if (transformer != nil) result[key] = transformer;
+
+		free(attributes);
 	}
 
 	return result;
