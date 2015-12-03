@@ -209,7 +209,7 @@ extern NSString * const MTLManagedObjectAdapterErrorDomain;
 //
 // Returns an instance of `modelClass` upon success, or nil if an error
 // occurred.
-+ (nullable id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject error:(NSError **)error;
++ (nullable __kindof id <MTLManagedObjectSerializing>)modelOfClass:(Class<MTLManagedObjectSerializing>)modelClass fromManagedObject:(NSManagedObject *)managedObject error:(NSError **)error;
 
 // Serializes a MTLModel into an NSManagedObject.
 //
@@ -218,7 +218,7 @@ extern NSString * const MTLManagedObjectAdapterErrorDomain;
 //           argument must not be nil.
 // error   - If not NULL, this may be set to an error that occurs during
 //           serialization or insertion.
-+ (nullable id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context error:(NSError **)error;
++ (nullable __kindof NSManagedObject *)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context error:(NSError **)error;
 
 // An optional value transformer that should be used for properties of the given
 // class.
