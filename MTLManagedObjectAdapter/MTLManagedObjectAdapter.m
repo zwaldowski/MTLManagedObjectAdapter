@@ -10,8 +10,6 @@
 
 #import <Mantle/Mantle.h>
 
-#import "EXTRuntimeExtensions.h"
-
 #import "MTLManagedObjectAdapter.h"
 
 NSString * const MTLManagedObjectAdapterErrorDomain = @"MTLManagedObjectAdapterErrorDomain";
@@ -43,6 +41,31 @@ static SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
 	selector[keyLength + suffixLength] = '\0';
 
 	return sel_registerName(selector);
+}
+
+
+static Class typeEncodingGetClassName(const char *typeString) {
+	// if this is an object type, and immediately followed by a quoted string...
+	if (typeString[0] != *(@encode(id)) || typeString[1] != '"') {
+		return Nil;
+	}
+
+	// we should be able to extract a class name
+	const char *className = typeString + 2;
+	const char *next = strchr(className, '"');
+
+	if (next == NULL || next == className) {
+		return Nil;
+	}
+
+	size_t classNameLength = next - className;
+	char trimmedName[classNameLength + 1];
+
+	strncpy(trimmedName, className, classNameLength);
+	trimmedName[classNameLength] = '\0';
+
+	// attempt to look up the class in the runtime
+	return objc_getClass(trimmedName);
 }
 
 @interface MTLManagedObjectAdapter ()
@@ -731,21 +754,25 @@ static SEL MTLSelectorWithKeyPattern(NSString *key, const char *suffix) {
 
 		if (property == NULL) continue;
 
-		mtl_moa_propertyAttributes *attributes = mtl_moa_copyPropertyAttributes(property);
-
 		NSValueTransformer *transformer = nil;
 
-		if (attributes->objectClass != nil) {
-			transformer = [self.class transformerForModelPropertiesOfClass:attributes->objectClass];
+		char *typeEncodeString = property_copyAttributeValue(property, "T");
+		if (typeEncodeString == NULL) { continue; }
+
+		Class objectClass = typeEncodingGetClassName(typeEncodeString);
+		if (objectClass != Nil) {
+			transformer = [self.class transformerForModelPropertiesOfClass:objectClass];
 		}
 
 		if (transformer == nil) {
-			transformer = [self.class transformerForModelPropertiesOfObjCType:attributes->type];
+			transformer = [self.class transformerForModelPropertiesOfObjCType:typeEncodeString];
 		}
 
-		if (transformer != nil) result[key] = transformer;
+		if (transformer != nil) {
+			result[key] = transformer;
+		}
 
-		free(attributes);
+		free(typeEncodeString);
 	}
 
 	return result;
