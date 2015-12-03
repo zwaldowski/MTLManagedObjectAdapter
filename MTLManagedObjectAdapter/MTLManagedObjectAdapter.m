@@ -68,6 +68,22 @@ static Class typeEncodingGetClassName(const char *typeString) {
 	return objc_getClass(trimmedName);
 }
 
+static BOOL objectPointerEquality(const void *item1, const void *item2, NSUInteger (*__nullable size)(const void *item)) {
+	id object1 = (__bridge id)item1;
+	id object2 = (__bridge id)item2;
+	return [object1 isEqual:object2];
+}
+
+NS_INLINE NSPointerFunctions *strongObjectsWithPointerEquality(void) {
+	NSPointerFunctions *functions = [[NSPointerFunctions alloc] initWithOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality];
+	functions.isEqualFunction = objectPointerEquality;
+	return functions;
+}
+
+NS_INLINE NSPointerFunctions *strongObjects(void) {
+	return [[NSPointerFunctions alloc] initWithOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality];
+}
+
 @interface MTLManagedObjectAdapter ()
 
 // The MTLModel subclass being serialized or deserialized.
@@ -98,7 +114,7 @@ static Class typeEncodingGetClassName(const char *typeString) {
 
 // Invoked from +modelOfClass:fromManagedObject:processedObjects:error: after
 // the receiver's properties have been initialized.
-- (id)modelFromManagedObject:(NSManagedObject *)managedObject processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error;
+- (id)modelFromManagedObject:(NSManagedObject *)managedObject processedObjects:(NSMapTable *)processedObjects error:(NSError **)error;
 
 // Performs the actual work of deserialization. This method is also invoked when
 // processing relationships, to create a new adapter (if needed) to handle them.
@@ -106,12 +122,12 @@ static Class typeEncodingGetClassName(const char *typeString) {
 // `processedObjects` is a dictionary mapping NSManagedObjects to the MTLModels
 // that have been created so far. It should remain alive for the full process
 // of deserializing the top-level managed object.
-+ (id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error;
++ (id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject processedObjects:(NSMapTable *)processedObjects error:(NSError **)error;
 
 // Invoked from
 // +managedObjectFromModel:insertingIntoContext:processedObjects:error: after
 // the receiver's properties have been initialized.
-- (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error;
+- (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(NSMapTable *)processedObjects error:(NSError **)error;
 
 // Performs the actual work of serialization. This method is also invoked when
 // processing relationships, to create a new adapter (if needed) to handle them.
@@ -119,7 +135,7 @@ static Class typeEncodingGetClassName(const char *typeString) {
 // `processedObjects` is a dictionary mapping MTLModels to the NSManagedObjects
 // that have been created so far. It should remain alive for the full process
 // of serializing the top-level MTLModel.
-+ (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error;
++ (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(NSMapTable *)processedObjects error:(NSError **)error;
 
 // Looks at propertyKeysForManagedObjectUniquing and forms an NSPredicate
 // using the uniquing keys and the provided model.
@@ -165,7 +181,7 @@ static Class typeEncodingGetClassName(const char *typeString) {
 
 #pragma mark Serialization
 
-- (id)modelFromManagedObject:(NSManagedObject *)managedObject processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error {
+- (id)modelFromManagedObject:(NSManagedObject *)managedObject processedObjects:(NSMapTable *)processedObjects error:(NSError **)error {
 	NSParameterAssert(managedObject != nil);
 	NSParameterAssert(processedObjects != nil);
 
@@ -179,7 +195,7 @@ static Class typeEncodingGetClassName(const char *typeString) {
 
 	// Pre-emptively consider this object processed, so that we don't get into
 	// any cycles when processing its relationships.
-	CFDictionaryAddValue(processedObjects, (__bridge void *)managedObject, (__bridge void *)model);
+	[processedObjects setObject:model forKey:managedObject];
 
 	BOOL (^setValueForKey)(NSString *, id) = ^(NSString *key, id value) {
 		// Mark this as being autoreleased, because validateValue may return
@@ -317,24 +333,21 @@ static Class typeEncodingGetClassName(const char *typeString) {
 		return nil;
 	}
 
-	CFMutableDictionaryRef processedObjects = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-	if (processedObjects == NULL) return nil;
-
-	id model = [self modelOfClass:modelClass fromManagedObject:managedObject processedObjects:processedObjects error:error];
-	CFRelease(processedObjects);
-
-	return model;
+	NSPointerFunctionsOptions strongObject = NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality;
+	NSMapTable *processedObjects = [[NSMapTable alloc] initWithKeyOptions:strongObject valueOptions:strongObject capacity:0];
+	return [self modelOfClass:modelClass fromManagedObject:managedObject processedObjects:processedObjects error:error];
 }
 
-+ (id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error {
+
++ (id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject processedObjects:(NSMapTable *)processedObjects error:(NSError **)error {
 	NSParameterAssert(modelClass != nil);
 	NSParameterAssert(processedObjects != nil);
 
 	if (managedObject == nil) return nil;
 
-	const void *existingModel = CFDictionaryGetValue(processedObjects, (__bridge void *)managedObject);
-	if (existingModel != NULL) {
-		return (__bridge id)existingModel;
+	id existingModel = [processedObjects objectForKey:managedObject];
+	if (existingModel != nil) {
+		return existingModel;
 	}
 
 	if ([modelClass respondsToSelector:@selector(classForDeserializingManagedObject:)]) {
@@ -357,7 +370,7 @@ static Class typeEncodingGetClassName(const char *typeString) {
 	return [adapter modelFromManagedObject:managedObject processedObjects:processedObjects error:error];
 }
 
-- (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error {
+- (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(NSMapTable *)processedObjects error:(NSError **)error {
 	NSParameterAssert(model != nil);
 	NSParameterAssert(context != nil);
 	NSParameterAssert(processedObjects != nil);
@@ -444,7 +457,7 @@ static Class typeEncodingGetClassName(const char *typeString) {
 
 	// Pre-emptively consider this object processed, so that we don't get into
 	// any cycles when processing its relationships.
-	CFDictionaryAddValue(processedObjects, (__bridge void *)model, (__bridge void *)managedObject);
+	[processedObjects setObject:managedObject forKey:model];
 
 	NSDictionary *dictionaryValue = model.dictionaryValue;
 	NSDictionary *managedObjectProperties = managedObject.entity.propertiesByName;
@@ -599,29 +612,20 @@ static Class typeEncodingGetClassName(const char *typeString) {
 }
 
 + (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context error:(NSError **)error {
-	CFDictionaryKeyCallBacks keyCallbacks = kCFTypeDictionaryKeyCallBacks;
-
-	// Compare MTLModel keys using pointer equality, not -isEqual:.
-	keyCallbacks.equal = NULL;
-
-	CFMutableDictionaryRef processedObjects = CFDictionaryCreateMutable(NULL, 0, &keyCallbacks, &kCFTypeDictionaryValueCallBacks);
-	if (processedObjects == NULL) return nil;
-
-	id managedObject = [self managedObjectFromModel:model insertingIntoContext:context processedObjects:processedObjects error:error];
-
-	CFRelease(processedObjects);
-
-	return managedObject;
+	NSPointerFunctions *keys = strongObjectsWithPointerEquality();
+	NSPointerFunctions *values = strongObjects();
+	NSMapTable *processedObjects = [[NSMapTable alloc] initWithKeyPointerFunctions:keys valuePointerFunctions:values capacity:0];
+	return [self managedObjectFromModel:model insertingIntoContext:context processedObjects:processedObjects error:error];
 }
 
-+ (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(CFMutableDictionaryRef)processedObjects error:(NSError **)error {
++ (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context processedObjects:(NSMapTable *)processedObjects error:(NSError **)error {
 	NSParameterAssert(model != nil);
 	NSParameterAssert(context != nil);
 	NSParameterAssert(processedObjects != nil);
 
-	const void *existingManagedObject = CFDictionaryGetValue(processedObjects, (__bridge void *)model);
-	if (existingManagedObject != NULL) {
-		return (__bridge id)existingManagedObject;
+	id existingManagedObject = [processedObjects objectForKey:model];
+	if (existingManagedObject != nil) {
+		return existingManagedObject;
 	}
 
 	MTLManagedObjectAdapter *adapter = [[self alloc] initWithModelClass:model.class];
