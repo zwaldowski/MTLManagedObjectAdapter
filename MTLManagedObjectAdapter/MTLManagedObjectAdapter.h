@@ -158,40 +158,42 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+typedef NS_ENUM(NSInteger, MTLManagedObjectAdapterError) {
+	// +classForDeserializingManagedObject: returned nil for the given object.
+	MTLManagedObjectAdapterErrorNoClassFound = 2,
+
+	// An NSManagedObject failed to initialize.
+	MTLManagedObjectAdapterErrorInitializationFailed = 3,
+
+	// The managed object key specified by +managedObjectKeysByPropertyKey does not
+	// exist in the NSEntityDescription.
+	MTLManagedObjectAdapterErrorInvalidManagedObjectKey = 4,
+
+	// The managed object property specified has a type that isn't supported by
+	// MTLManagedObjectAdapter.
+	MTLManagedObjectAdapterErrorUnsupportedManagedObjectPropertyType = 5,
+
+	// A MTLModel property cannot be serialized to or deserialized from an
+	// NSManagedObject relationship.
+	//
+	// For a to-one relationship, this means that the property does not contain
+	// a MTLModel, or the MTLModel does not conform to <MTLManagedObjectSerializing>.
+	//
+	// For a to-many relationship, this means that the property does not contain an
+	// NSArray or NSSet of MTLModel<MTLManagedObjectSerializing> instances.
+	MTLManagedObjectAdapterErrorUnsupportedRelationshipClass = 6,
+
+	// The fetch request to find an existing managed object based on
+	// `+propertyKeysForManagedObjectUniquing` failed.
+	MTLManagedObjectAdapterErrorUniqueFetchRequestFailed = 7,
+
+	// The model's implementation of +managedObjectKeysByPropertyKey included a key
+	// which does not actually exist in +propertyKeys.
+	MTLManagedObjectAdapterErrorInvalidManagedObjectMapping = 8
+};
+
 // The domain for errors originating from MTLManagedObjectAdapter.
 extern NSString * const MTLManagedObjectAdapterErrorDomain;
-
-// +classForDeserializingManagedObject: returned nil for the given object.
-extern const NSInteger MTLManagedObjectAdapterErrorNoClassFound;
-
-// An NSManagedObject failed to initialize.
-extern const NSInteger MTLManagedObjectAdapterErrorInitializationFailed;
-
-// The managed object key specified by +managedObjectKeysByPropertyKey does not
-// exist in the NSEntityDescription.
-extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectKey;
-
-// The managed object property specified has a type that isn't supported by
-// MTLManagedObjectAdapter.
-extern const NSInteger MTLManagedObjectAdapterErrorUnsupportedManagedObjectPropertyType;
-
-// The fetch request to find an existing managed object based on
-// `+propertyKeysForManagedObjectUniquing` failed.
-extern const NSInteger MTLManagedObjectAdapterErrorUniqueFetchRequestFailed;
-
-// A MTLModel property cannot be serialized to or deserialized from an
-// NSManagedObject relationship.
-//
-// For a to-one relationship, this means that the property does not contain
-// a MTLModel, or the MTLModel does not conform to <MTLManagedObjectSerializing>.
-//
-// For a to-many relationship, this means that the property does not contain an
-// NSArray or NSSet of MTLModel<MTLManagedObjectSerializing> instances.
-extern const NSInteger MTLManagedObjectAdapterErrorUnsupportedRelationshipClass;
-
-// The model's implementation of +managedObjectKeysByPropertyKey included a key
-// which does not actually exist in +propertyKeys.
-extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping;
 
 // Converts a MTLModel object to and from an NSManagedObject.
 @interface MTLManagedObjectAdapter : NSObject

@@ -16,13 +16,6 @@
 #import "MTLManagedObjectAdapter.h"
 
 NSString * const MTLManagedObjectAdapterErrorDomain = @"MTLManagedObjectAdapterErrorDomain";
-const NSInteger MTLManagedObjectAdapterErrorNoClassFound = 2;
-const NSInteger MTLManagedObjectAdapterErrorInitializationFailed = 3;
-const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectKey = 4;
-const NSInteger MTLManagedObjectAdapterErrorUnsupportedManagedObjectPropertyType = 5;
-const NSInteger MTLManagedObjectAdapterErrorUnsupportedRelationshipClass = 6;
-const NSInteger MTLManagedObjectAdapterErrorUniqueFetchRequestFailed = 7;
-const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping = 8;
 
 // Performs the given block in the context's queue, if it has one.
 static id performInContext(NSManagedObjectContext *context, id (^block)(void)) {
