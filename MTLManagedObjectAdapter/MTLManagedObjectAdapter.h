@@ -14,6 +14,8 @@ FOUNDATION_EXPORT double MTLManagedObjectAdapterVersionNumber;
 //! Project version string for MTLManagedObjectAdapter.
 FOUNDATION_EXPORT const unsigned char MTLManagedObjectAdapterVersionString[];
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol MTLModel;
 
 // A MTLModel object that supports being serialized to and from Core Data as an
@@ -85,7 +87,7 @@ FOUNDATION_EXPORT const unsigned char MTLManagedObjectAdapterVersionString[];
 // MTLManagedObjectAdapter will use the result of that method instead.
 //
 // Returns a value transformer, or nil if no transformation should be performed.
-+ (NSValueTransformer *)entityAttributeTransformerForKey:(NSString *)key;
++ (nullable NSValueTransformer *)entityAttributeTransformerForKey:(NSString *)key;
 
 // Specifies the MTLModel subclasses that should be deserialized to the
 // receiver's property keys when a property key corresponds to an entity
@@ -119,7 +121,7 @@ FOUNDATION_EXPORT const unsigned char MTLManagedObjectAdapterVersionString[];
 //
 // Returns the class that should be instantiated (which may be the receiver), or
 // nil to abort parsing (e.g., if the data is invalid).
-+ (Class)classForDeserializingManagedObject:(NSManagedObject *)managedObject;
++ (nullable Class)classForDeserializingManagedObject:(NSManagedObject *)managedObject;
 
 // Overriden when merging the value of the given key on the receiver with the
 // value of the same key from the given `NSManagedObject` requires custom
@@ -205,7 +207,7 @@ extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping;
 //
 // Returns an instance of `modelClass` upon success, or nil if an error
 // occurred.
-+ (id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject error:(NSError **)error;
++ (nullable id)modelOfClass:(Class)modelClass fromManagedObject:(NSManagedObject *)managedObject error:(NSError **)error;
 
 // Serializes a MTLModel into an NSManagedObject.
 //
@@ -214,7 +216,7 @@ extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping;
 //           argument must not be nil.
 // error   - If not NULL, this may be set to an error that occurs during
 //           serialization or insertion.
-+ (id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context error:(NSError **)error;
++ (nullable id)managedObjectFromModel:(id<MTLManagedObjectSerializing>)model insertingIntoContext:(NSManagedObjectContext *)context error:(NSError **)error;
 
 // An optional value transformer that should be used for properties of the given
 // class.
@@ -231,7 +233,7 @@ extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping;
 //         nil.
 //
 // Returns a value transformer or nil if no transformation should be used.
-+ (NSValueTransformer *)transformerForModelPropertiesOfClass:(Class)class;
++ (nullable NSValueTransformer *)transformerForModelPropertiesOfClass:(Class)aClass;
 
 // A value transformer that should be used for a properties of the given
 // primitive type.
@@ -245,7 +247,7 @@ extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping;
 //            as it would be returned by the @encode() directive.
 //
 // Returns a value transformer or nil if no transformation should be used.
-+ (NSValueTransformer *)transformerForModelPropertiesOfObjCType:(const char *)objCType;
++ (nullable NSValueTransformer *)transformerForModelPropertiesOfObjCType:(const char *)objCType;
 
 @end
 
@@ -256,3 +258,5 @@ extern const NSInteger MTLManagedObjectAdapterErrorInvalidManagedObjectMapping;
 + (NSValueTransformer *)NSURLEntityAttributeTransformer;
 
 @end
+
+NS_ASSUME_NONNULL_END
