@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 // Returns a dictionary mapping property keys to entity keys (as strings) or
 // NSNull values.
-+ (NSDictionary *)managedObjectKeysByPropertyKey;
++ (NSDictionary<NSString *, NSString *> *)managedObjectKeysByPropertyKey;
 
 @optional
 
@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 // NOTE: If multiple managed objects follow the same uniquing criteria only one
 // of them will be set with our MTLModel's values.
-+ (NSSet *)propertyKeysForManagedObjectUniquing;
++ (NSSet<NSString *> *)propertyKeysForManagedObjectUniquing;
 
 // Specifies how to convert a managed object attribute into the given property
 // key. If reversible, the transformer will also be used to convert the property
@@ -107,7 +107,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 // Returns a dictionary mapping property keys to the Class objects that should
 // be used.
-+ (NSDictionary *)relationshipModelClassesByPropertyKey;
++ (NSDictionary<NSString *, Class<MTLModel>> *)relationshipModelClassesByPropertyKey;
 
 // Overridden to deserialize a different class instead of the receiver, based on
 // information in the provided object.
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 // Returns the class that should be instantiated (which may be the receiver), or
 // nil to abort parsing (e.g., if the data is invalid).
-+ (nullable Class)classForDeserializingManagedObject:(NSManagedObject *)managedObject;
++ (nullable Class<MTLModel>)classForDeserializingManagedObject:(NSManagedObject *)managedObject;
 
 // Overriden when merging the value of the given key on the receiver with the
 // value of the same key from the given `NSManagedObject` requires custom
