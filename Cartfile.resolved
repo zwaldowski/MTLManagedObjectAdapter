@@ -1,4 +1,4 @@
-github "Mantle/Mantle" "2.0.5"
-github "Quick/Nimble" "v3.0.0"
+github "zwaldowski/Mantle" "2.1.0"
+github "Quick/Nimble" "v3.2.0"
 github "Quick/Quick" "v0.8.0"
-github "jspahrsummers/xcconfigs" "0.8.1"
+github "jspahrsummers/xcconfigs" "0.9"
