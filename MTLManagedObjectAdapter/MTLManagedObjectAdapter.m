@@ -423,7 +423,7 @@ NS_INLINE NSPointerFunctions *strongObjects(void) {
 				return nil;
 			}
 
-			return results.mtl_firstObject;
+			return results.firstObject;
 		});
 
 		if (encountedError && error != NULL) {
