@@ -16,9 +16,13 @@ NSString * const MTLManagedObjectAdapterErrorDomain = @"MTLManagedObjectAdapterE
 
 // Performs the given block in the context's queue, if it has one.
 static id performInContext(NSManagedObjectContext *context, id (^block)(void)) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+	// Allow use of the deprecated value; users of the library should handle it.
 	if (context.concurrencyType == NSConfinementConcurrencyType) {
 		return block();
 	}
+#pragma clang diagnostic pop
 
 	__block id result = nil;
 	[context performBlockAndWait:^{
